@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Number to Words</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff8901;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff8901;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #fb923c;
+            }
+
+        #error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Output text styling */
+        #output {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            input[type="text"], button {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            #output {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            input[type="text"], button {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            #output {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Number to Words Converter</h1>
+
+    <div class="container">
+        <label for="getNumber">Please enter a number (For example: 123.45):</label>
+        <input type="text" id="getNumber" placeholder="123.45 or 123" onchange="validateInput()">
+
+        <button onclick="convertNumber()">Start Conversion</button>
+
+        <div id="output">
+            <div id="error"></div>
+        </div>
+    </div>
+
+    <script>
+        function validateInput() {
+            const inputElement = document.getElementById("getNumber");
+            const errorMessageElement = document.getElementById("error");
+            const inputValue = inputElement.value.trim();
+            errorMessageElement.textContent = '';
+
+            // if input is empty
+            if (inputValue === '') {
+                errorMessageElement.textContent = "Input cannot be empty.";
+                return;
+            }
+
+            // Input validation number with 2 decimals
+            const regex = /^\d+(\.\d{1,2})?$/;
+            if (!regex.test(inputValue)) {
+                errorMessageElement.textContent = "Invalid input: Please enter a number with up to two decimal places.";
+                inputElement.value = '';
+                return;
+            }
+
+            // Parse and checking the number is negative
+            const parsedValue = parseFloat(inputValue);
+            if (parsedValue < 0) {
+                errorMessageElement.textContent = "Input cannot be a negative number.";
+                inputElement.value = '';
+                return;
+            }
+        }
+
+        // Conversion from NumbersToWords start here
+        async function convertNumber() {
+            const inputElement = document.getElementById("getNumber");
+            const errorMessageElement = document.getElementById("error");
+            const inputValue = inputElement.value.trim();
+
+            //Validation Input
+            if (inputValue === '' || isNaN(inputValue) || parseFloat(inputValue) < 0) {
+                errorMessageElement.textContent = 'Please enter positive numbers only.';
+                return;
+            }
+
+            try {
+                let number = parseFloat(inputValue);
+                let response = await fetch('https://localhost:7297/api/NumberToWords', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(number)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to convert number.');
+                }
+
+                let words = await response.text();
+                document.getElementById("output").textContent = words;
+            } catch (error) {
+                errorMessageElement.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
+

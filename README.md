@@ -18,6 +18,6 @@ Step 3 Restore NuGet Packages (Dependencies):
     This will typically launch the Web API in your default browser or through IIS Express, allowing you to interact with its endpoints 
 Step 6 Run the API’s Testing using Web Browser or Postman: 
   • From Postman Testing use URL (https://localhost:7297/api/NumberToWords ) 
-  • From Web Browser Testing use URL (https://localhost:7267/swagger/index.html ) 
+  • From Web Browser Testing use URL (https://localhost:7297/swagger/index.html ) 
 Step 7 Open the Index.html file for Client-side results : 
 • For Client-side Result use URL (https://localhost:5246/index.html )
